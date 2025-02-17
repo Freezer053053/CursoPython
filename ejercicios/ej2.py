@@ -1,0 +1,2 @@
+lista_de_datos=[input("Introduce un nombre: "), input("Introduce una dirección: "), input("Introduce un teléfono: ")]
+print("Los datos personales son: ", "\nNombre: ", lista_de_datos[0], "\nDirección: ", lista_de_datos[1], "\nTelf: ", lista_de_datos[2])
