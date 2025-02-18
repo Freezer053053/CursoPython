@@ -16,5 +16,5 @@ def es_palindromo(frase):
     return verificar(caracteres, 0, len(caracteres)-1)
 
 
-frase=input("Introduce una palabra o frase")
+frase=input("Introduce una palabra o frase: ")
 print(es_palindromo(frase))

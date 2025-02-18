@@ -1,14 +1,20 @@
 def es_palindromo(frase):
-    frase_limpia=''.join(frase.split()).lower()
-    longitud=len(frase_limpia)
+    caracteres=[]
+    for c in frase:
+        if c.isalnum():
+        #if (ord('A') <= ord(c) <= ord('Z')) or (ord('a') <= ord(c) <= ord('z')) or (ord('0') <= ord(c) <= ord('9')):
+            caracteres.append(c.lower())
 
-    for i in range(longitud // 2):
-        if frase_limpia[i]!=frase_limpia[longitud-i-1]:
+    
+    def verificar(caracteres, inicio, fin):
+        if inicio>=fin:
+            return True
+        if caracteres[inicio]!=caracteres[fin]:
             return False
-    return True
+        return verificar(caracteres, inicio+1, fin-1)
+    
+    return verificar(caracteres, 0, len(caracteres)-1)
 
-frase = input("Introduce una palabra o frase: ")
-if es_palindromo(frase):
-    print("Es un palíndromo")
-else:
-    print("No es un palíndromo")
+
+frase=input("Introduce una palabra o frase: ")
+print(es_palindromo(frase))

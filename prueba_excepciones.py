@@ -7,13 +7,22 @@ def resta(num1, num2):
 def multiplica(num1, num2):
 	return num1*num2
 
-def divide(num1,num2):		
-	return num1/num2
+def divide(num1,num2):	
+	try:	
+		return num1/num2
 	
+	except ZeroDivisionError:
+		print("No se puede dividir entre 0")
+		return "Operación erronea"
 
-op1=(int(input("Introduce el primer número: ")))
+while True:
+	try:
+		op1=(int(input("Introduce el primer número: ")))
+		op2=(int(input("Introduce el segundo número: ")))	
+		break	
 
-op2=(int(input("Introduce el segundo número: ")))		
+	except ValueError:
+		print("Los valores introducidos no son correctos. Inténtalo de nuevo")
 	
 operacion=input("Introduce la operacion a realizar (suma,resta,multiplica,divide): ")
 
@@ -30,7 +39,7 @@ elif operacion=="divide":
 	print(divide(op1,op2))
 
 else:
-	print ("Operaci�n no contemplada")
+	print ("Operación no contemplada")
 
 
-print("Operaci�n ejecutada. Continuaci�n de ejec�ci�n del programa ")
+print("Operación ejecutada. Continuación de ejecución del programa ")
