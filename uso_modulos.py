@@ -1,3 +1,3 @@
-from calculos.calcbas import *
+from calculos.basicos.calcbas import *
 
 dividir(4,2)
