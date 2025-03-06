@@ -1,1 +1,1 @@
-250
+raiz.resizable(1,1)
