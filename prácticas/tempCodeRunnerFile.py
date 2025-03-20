@@ -1,0 +1,1 @@
+root.config(menu=barraMenu, width=250, height=400

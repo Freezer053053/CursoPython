@@ -16,7 +16,8 @@ listaEmpleados = [
 ]
 
 def calculo_comision(empleado):
-    empleado.salario=empleado.salario*1.03
+    if empleado.salario<=3000:
+        empleado.salario=empleado.salario*1.03
     return empleado
 
 listaEmpleadosComision=map(calculo_comision, listaEmpleados)

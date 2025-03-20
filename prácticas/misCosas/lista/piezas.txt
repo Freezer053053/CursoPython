@@ -1,0 +1,9 @@
+Capacitores
+-ceramico
+-ceramico SMD
+-electrolitico
+-electrolitico SMD
+-film
+-mica
+-variable
+-variable SMD
