@@ -1,0 +1,6 @@
+componentes:
+Capacitor
+Diodo
+Resistencia
+Chip
+Transistor

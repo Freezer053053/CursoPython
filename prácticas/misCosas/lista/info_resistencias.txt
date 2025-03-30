@@ -1,0 +1,8 @@
+tipos:
+Fija
+Fija SMD
+Variable
+Fotorresistencia
+Fotorresistencia SMD
+Termorresistencia
+Termorresistencia SMD

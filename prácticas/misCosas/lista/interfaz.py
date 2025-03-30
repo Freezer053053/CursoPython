@@ -4,17 +4,26 @@ from tkinter import ttk
 from utils import emergentes
 from BBDD import *
 from BBDD import insertar_o_actualizar_componente
+from fingerprints import cargar_propiedades_desde_txt
+from fingerprints import obtener_datos_desde_bd
+
 
 
 # def graficos():
 
-def generar_txt():
+def ayuda():
+    with open(f"prácticas/misCosas/lista/ayuda.txt", "r", encoding="utf-8") as archivo:
+        ayuda = archivo.read()
+
+    messagebox.showinfo("Uso de la applicación", ayuda)
+
+def generar_y_mostrar_txt(user):
     from BBDD import contenido  # Importamos la función de la BBDD
     componentes = contenido()
     
     if componentes:
         try:
-            with open("lista_componentes.txt", "w", encoding="utf-8") as archivo:
+            with open(f"lista_componentes_{user}.txt", "w", encoding="utf-8") as archivo:
                 archivo.write("Lista de Componentes:\n\n")
                 
                 for tabla, datos in componentes.items():
@@ -23,7 +32,11 @@ def generar_txt():
                         archivo.write(f"{componente}\n")
                     archivo.write("\n")
             
+            with open(f"lista_componentes.txt", "r", encoding="utf-8") as archivo:
+                lista = archivo.read()
+
             messagebox.showinfo("Éxito", "Archivo 'lista_componentes.txt' creado con éxito.")
+            messagebox.showinfo("Componentes", lista)
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo crear el archivo: {e}")
     else:
@@ -49,6 +62,7 @@ def seleccion(opcion):
 
 def ventanaTransistores():
 
+    cargar_propiedades_desde_txt("transistores.db", "info_transistores.txt")
     
 
     def agregar_transistor():
@@ -77,39 +91,35 @@ def ventanaTransistores():
 
     labelTipo = Label(frameTr, text="Tipo: ")
     labelTipo.grid(row=0, column=0, padx=5)
+
+    tipos = obtener_datos_desde_bd("transistores.db", "TIPOS", "TIPO")
+
     tipo = ttk.Combobox(frameTr,
                     state = "readonly",
-                    values = [
-                        "Mosfet",
-                        "Transistor"
-                        ]
+                    values = tipos
                     )
     
     tipo.grid(row=0, column=1, pady=10)
 
-    labelPat = Label(frameTr, text="Patillage: ")
+    labelPat = Label(frameTr, text="Encapsulado: ")
     labelPat.grid(row=1, column=0, padx=5)
+
+    patillages = obtener_datos_desde_bd("transistores.db", "PATILLAGES", "PATILLAGE")
+
     patillage = ttk.Combobox(frameTr,
                     state = "readonly",
-                    values = [
-                        "NPN",
-                        "PNP"
-                        ]
+                    values = patillages
                     )
     patillage.grid(row=1, column=1, pady=10)
 
-    labelEnc = Label(frameTr, text="Encapsulado: ")
+    labelEnc = Label(frameTr, text="Patillage: ")
     labelEnc.grid(row=2, column=0, padx=5)
+
+    encapsulados = obtener_datos_desde_bd("transistores.db", "ENCAPSULADOS", "ENCAPSULADO")
+
     encapsulado = ttk.Combobox(frameTr,
                     state = "readonly",
-                    values = [
-                        "TO-92",
-                        "TO-5",
-                        "TO-220",
-                        "TO-3",
-                        "SOT-23",
-                        "TO-258"
-                        ]
+                    values = encapsulados
                     )
     encapsulado.grid(row=2, column=1, pady=10)
 
@@ -130,6 +140,7 @@ def ventanaTransistores():
     
 
 def ventanaIC():
+    cargar_propiedades_desde_txt("chips.db", "info_chips.txt")
 
     def agregar_ic():
         datos = {
@@ -159,144 +170,35 @@ def ventanaIC():
 
     labelMarca = Label(frameIC, text="Marca: ")
     labelMarca.grid(row=0, column=0, padx=5)
+
+
+    marcas = obtener_datos_desde_bd("chips.db", "MARCAS", "MARCA")
+
     marca = ttk.Combobox(frameIC,
                     state = "readonly",
-                    values = [
-                        "Aeroflex",
-                        "Agere Systems",
-                        "Achronix Semiconductor",
-                        "Allegro MicroSystems",
-                        "Altera (ahora parte de Intel)",
-                        "AMD (Advanced Micro Devices)",
-                        "Ambarella",
-                        "Amkor Technology",
-                        "Analog Devices",
-                        "Applied Materials",
-                        "ARM Holdings",
-                        "ASE Group (Advanced Semiconductor Engineering)",
-                        "ASML",
-                        "ASPEED Technology",
-                        "Avago Technologies (fusionada con Broadcom)",
-                        "Broadcom",
-                        "Broadcom Corporation",
-                        "Cadence Design Systems",
-                        "Cirrus Logic",
-                        "Conexant Systems",
-                        "Cypress Semiconductor",
-                        "Dialog Semiconductor",
-                        "Etron Technology",
-                        "Everspin Technologies",
-                        "Fairchild Semiconductor (ahora parte de ON Semiconductor)",
-                        "Freescale Semiconductor (fusionada con NXP)",
-                        "Fujitsu",
-                        "GlobalFoundries",
-                        "Hitachi",
-                        "IBM",
-                        "IC Insights",
-                        "IDT (Integrated Device Technology, adquirida por Renesas)",
-                        "Imagination Technologies",
-                        "Infineon Technologies",
-                        "Intersil (adquirida por Renesas)",
-                        "Intel Corporation",
-                        "ISSI (Integrated Silicon Solution Inc.)",
-                        "Lite-On",
-                        "Lattice Semiconductor",
-                        "Macronix",
-                        "Macronix International",
-                        "Marvell Technology",
-                        "Maxim Integrated",
-                        "Maxim Integrated Circuits",
-                        "MediaTek",
-                        "Melexis",
-                        "Microchip Technology",
-                        "Micron Technology",
-                        "Microsemi Corporation",
-                        "Mitsubishi Electric",
-                        "National Semiconductor (adquirida por Texas Instruments)",
-                        "NVIDIA",
-                        "Nexperia",
-                        "NXP Semiconductors",
-                        "Omnivision Technologies",
-                        "ON Semiconductor",
-                        "Panasonic",
-                        "Pericom Semiconductor",
-                        "PixArt Imaging",
-                        "PLX Technology",
-                        "PMC-Sierra (ahora parte de Microsemi)",
-                        "Power Integrations",
-                        "Qorvo",
-                        "Qualcomm",
-                        "Realtek Semiconductor",
-                        "Renesas Electronics",
-                        "Renesas SP Drivers",
-                        "ROHM Group",
-                        "Rohm Semiconductor",
-                        "Samsung Electronics",
-                        "Seiko Epson",
-                        "Semtech",
-                        "SiTime",
-                        "Silicon Labs",
-                        "Silicon Motion",
-                        "SK Hynix",
-                        "SMIC (Semiconductor Manufacturing International Corporation)",
-                        "Sony Semiconductor",
-                        "Spreadtrum (ahora parte de UNISOC)",
-                        "STMicroelectronics",
-                        "Synopsys",
-                        "Texas Instruments",
-                        "Toshiba",
-                        "Tower Semiconductor",
-                        "Transphorm",
-                        "Triquint Semiconductor (fusionada con RF Micro Devices para formar Qorvo)",
-                        "Trident Microsystems",
-                        "TSMC (Taiwan Semiconductor Manufacturing Company)",
-                        "UMC (United Microelectronics Corporation)",
-                        "UNISOC",
-                        "Vishay Intertechnology",
-                        "Winbond Electronics",
-                        "Wolfspeed (antes parte de Cree Inc.)",
-                        "Xilinx",
-                        "Zilog"
-                        ]
+                    values = marcas
                     )
     marca.grid(row=0, column=1, pady=10)
 
     labelTipo = Label(frameIC, text="Tipo: ")
     labelTipo.grid(row=1, column=0, padx=5)
+
+    tipos = obtener_datos_desde_bd("chips.db", "TIPOS", "TIPO")
+
     tipo = ttk.Combobox(frameIC,
                     state = "readonly",
-                    values = [
-                        "ROM",
-                        "Microprocessor",
-                        "CMOS",
-                        "EEPROM",
-                        "Flash Memory",
-                        "Static RAM",
-                        "TTL",
-                        "ECL",
-                        "MOS",
-                        "I2L"
-                        ]
+                    values = tipos
                     )
     tipo.grid(row=1, column=1, pady=10)
     
     labelEncapsulado = Label(frameIC, text="Encapsulado: ")
     labelEncapsulado.grid(row=2, column=0, padx=5)
+
+    encapsulados = obtener_datos_desde_bd("chips.db", "ENCAPSULADOS", "ENCAPSULADO")
+
     encapsulado = ttk.Combobox(frameIC,
                     state = "readonly",
-                    values = [
-                        "DIP",
-                        "PGA",
-                        "SOP",
-                        "TSOP",
-                        "QFP",
-                        "SOJ",
-                        "QFJ",
-                        "QFN",
-                        "TCP",
-                        "BGA",
-                        "LGA"
-                        ]
+                    values = encapsulados
                     )
     encapsulado.grid(row=2, column=1, pady=10)
 
@@ -315,11 +217,10 @@ def ventanaIC():
     
 
 def ventanaDiodos():
-
     def agregar_diodo():
         datos = {
             "tipo": tipo.get(),
-            "color": color.get() if tipo.get() not in ["Zener", "Zener SMD"] else None,
+            "color": color.get() if tipo.get() not in tipos_requieren_desactivacion else None,
             "voltios": voltage.get(),
             "cantidad": cantidad.get()
         }
@@ -329,7 +230,7 @@ def ventanaDiodos():
         if all(value != "" for value in datos_requeridos.values()):  # Validación
             # Claves relevantes dependiendo del tipo de diodo
             columnas_clave = ["tipo", "voltios"]
-            if tipo.get() not in ["Zener", "Zener SMD"]:
+            if tipo.get() not in tipos_requieren_desactivacion:
                 columnas_clave.append("color")
 
             exito = insertar_o_actualizar_componente("diodos", datos, columnas_clave)
@@ -340,8 +241,6 @@ def ventanaDiodos():
         else:
             messagebox.showerror("Error", "Todos los campos obligatorios deben ser rellenados.")
 
-            
-
     diodos = Toplevel(root)
     diodos.title("Diodos")
     diodos.geometry("300x200")
@@ -350,33 +249,34 @@ def ventanaDiodos():
 
     labelTipo = Label(frameDi, text="Tipo: ")
     labelTipo.grid(row=0, column=0, padx=5)
-    
+
+    # Cargar tipos y colores desde la base de datos
+    cargar_propiedades_desde_txt("diodos.db", "info_diodos.txt")
+    tipos = obtener_datos_desde_bd("diodos.db", "TIPOS", "TIPO")
+    tipos_sin_colores = obtener_datos_desde_bd("diodos.db", "TIPOS_SIN_COLORES", "TIPO")
+    colores = obtener_datos_desde_bd("diodos.db", "COLORES", "COLOR")
+
+    # Subconjunto de tipos que desactivan el color
+    tipos_requieren_desactivacion = tipos_sin_colores
+
     def tipo_seleccionado(event):
-        if tipo.get() in ["Zener", "Zener SMD"]:
+        if tipo.get() in tipos_requieren_desactivacion:
+            # Desactivar la combobox de color para los tipos específicos
+            color.set("")  # Limpiar selección de color
             color.config(state="disabled")
         else:
+            # Reactivar la combobox de color para otros tipos
             color.config(state="readonly")
-    
+
     tipo = ttk.Combobox(frameDi,
                         state="readonly",
-                        values=["Zener", "Zener SMD", "LED", "LED SMD"])
+                        values = tipos_sin_colores + tipos)
     tipo.grid(row=0, column=1, pady=10)
     tipo.bind("<<ComboboxSelected>>", tipo_seleccionado)
 
     labelColor = Label(frameDi, text="Color: ")
     labelColor.grid(row=1, column=0, padx=5)
-    color = ttk.Combobox(frameDi,
-                        state="readonly",
-                        values=[
-                            "Rojo",
-                            "Verde",
-                            "Azul",
-                            "Amarillo",
-                            "Naranja",
-                            "Morado",
-                            "Blanco",
-                            "Infrarrojo"
-                        ])
+    color = ttk.Combobox(frameDi, state="readonly", values = colores)
     color.grid(row=1, column=1, pady=10)
 
     labelVol = Label(frameDi, text="Voltage (V): ")
@@ -389,8 +289,10 @@ def ventanaDiodos():
     cantidad = Entry(frameDi, textvariable=cantidad_defecto)
     cantidad.grid(row=3, column=1, pady=10)
 
-    botonAgregar=Button(frameDi, text="Agregar", width=20, command=lambda:agregar_diodo())
+    botonAgregar = Button(frameDi, text="Agregar", width=20, command=lambda: agregar_diodo())
     botonAgregar.grid(row=4, column=0, columnspan=2, pady=3)
+
+
     
     # view = color.view()
 
@@ -423,13 +325,14 @@ def ventanaResistencias():
     frameRes = Frame(resistencia)
     frameRes.pack()
 
+    cargar_propiedades_desde_txt("resistencias.db", "info_resistencias.txt")
+    tipos = obtener_datos_desde_bd("resistencias.db", "TIPOS", "TIPO")
+
     labelTipo = Label(frameRes, text="Tipo: ")
     labelTipo.grid(row=0, column=0, padx=5)
     tipo = ttk.Combobox(frameRes,
                     state = "readonly",
-                    values = [
-                        "Fija", "Fija SMD", "Variable", "Fotorresistencia", "Fotorresistencia SMD", "Termorresistencia", "Termorresistencia SMD"
-                        ]
+                    values = tipos
                     )
     tipo.grid(row=0, column=1, pady=10)
 
@@ -451,6 +354,9 @@ def ventanaResistencias():
 
 def ventanaCapacitor():
     '''Ventana para introducir los valores de los capacitores'''
+
+    cargar_propiedades_desde_txt("capacitores.db", "info_capacitores.txt")
+    
     def agregar_capacitor():
         datos = {
             "tipo": tipo.get(),
@@ -479,19 +385,23 @@ def ventanaCapacitor():
 
     labelTipo = Label(frameCap, text="Tipo: ")
     labelTipo.grid(row=0, column=0, padx=5)
+
+    tipos = obtener_datos_desde_bd("capacitores.db", "TIPOS", "TIPO")
+
     tipo = ttk.Combobox(frameCap,
                     state = "readonly",
-                    values = [
-                        "Electrolítico","Electrolítico SMD", "Cerámico", "Cerámico SMD", "Film", "Mica", "Variable"
-                        ]
+                    values = tipos
                     )
     tipo.grid(row=0, column=1, pady=10)
     
     labelPol = Label(frameCap, text="Polarizado: ")
     labelPol.grid(row=1, column=0, padx=5)
+
+    polarizados = obtener_datos_desde_bd("capacitores.db", "POLARIZADOS", "POLARIZADO")
+
     polarizado = ttk.Combobox(frameCap,
                     state = "readonly",
-                    values = ["Si", "No"]
+                    values = polarizados
                     )
     polarizado.grid(row=1, column=1, pady=10)
 
@@ -521,7 +431,7 @@ def ventanaCapacitor():
 root = Tk()
 root.title("Gestión de componentes")
 #root.resizable(0, 0)
-root.geometry('224x100')
+root.geometry('275x150')
 
 miFrameSlct = Frame(root)
 miFrameSlct.config(width = 600, height = 400)
@@ -537,41 +447,63 @@ ayudaMenu = Menu(barraMenu, tearoff = 0)
 root.config(menu = barraMenu, width = 250, height = 400)
             
 barraMenu.add_cascade(label = "BBDD", menu = BBDDMenu)
-BBDDMenu.add_command(label = "Conectar a BBDD", command = lambda:connect())
+BBDDMenu.add_command(label = "Conectar a BBDD", command = lambda:connect(selectUser.get( )))
 BBDDMenu.add_command(label = "Desconectar de BBDD", command = lambda:desconectar())
 BBDDMenu.add_separator()
-BBDDMenu.add_command(label = "Salir", command = lambda:salir())
+BBDDMenu.add_command(label = "Salir", command = lambda:root.destroy())
 
-barraMenu.add_cascade(label = "Borrar", menu = borrarMenu)
-borrarMenu.add_command(label = "Borrar campos", command = lambda:borrar())
+# barraMenu.add_cascade(label = "Borrar", menu = borrarMenu)
+# borrarMenu.add_command(label = "Borrar campos", command = lambda:borrar())
 
-barraMenu.add_cascade(label = "CRUD", menu = CRUDMenu)
-CRUDMenu.add_command(label = "Crear", command = lambda:create())
-CRUDMenu.add_command(label = "Leer", command = lambda:leer())
-CRUDMenu.add_command(label = "Actualizar", command = lambda:actualizar())
-CRUDMenu.add_command(label = "Eliminar", command = lambda:delete())
+# barraMenu.add_cascade(label = "CRUD", menu = CRUDMenu)
+# CRUDMenu.add_command(label = "Crear", command = lambda:create())
+# CRUDMenu.add_command(label = "Leer", command = lambda:leer())
+# CRUDMenu.add_command(label = "Actualizar", command = lambda:actualizar())
+# CRUDMenu.add_command(label = "Eliminar", command = lambda:delete())
 
 barraMenu.add_cascade(label = "Ayuda", menu = ayudaMenu)
 ayudaMenu.add_command(label = "Licencia", command = lambda:avisoLicencia())
 ayudaMenu.add_command(label = "Como usar el programa", command = lambda:ayuda())
 
 #--------------------------opciones-------------------------
+selectUser = ttk.Combobox(miFrameSlct,
+                          state = "readonly",
+                          values = ["alex", "jorge"]
+                          )
+selectUser.grid(row=0, column=1, pady=5, padx=10, columnspan=3)
+
+labelUser = Label(miFrameSlct, text = "Usuario:")
+labelUser.grid(row=0, column=0, sticky="e")
+
+cargar_propiedades_desde_txt("all_components.db", "componentes.txt")
+
+componentes = obtener_datos_desde_bd("all_components.db", "TIPOS", "TIPO")
+
+labelSelect = Label(miFrameSlct, text="Componente:")
+labelSelect.grid(row=1, column=0, sticky="e")
 
 select = ttk.Combobox(miFrameSlct,
                     state = "readonly",
-                    values = ["Capacitor", "Diodo", "Resistencia", "Chip", "Transistores"]
+                    values = componentes
                     )
-select.grid(row=0, column=0, pady=5, padx = 10)
+select.grid(row=1, column=1, pady=5, padx = 10)
 
 
 
-botonSelect = ttk.Button(miFrameSlct, text = "Seleccionar", command = lambda:seleccion(select.get()))
-botonSelect.grid(row=1, column=0, pady=5, padx = 10)
-
-botonView = ttk.Button(miFrameSlct, text = "Ver contenido", command = lambda:generar_txt())
+botonView = ttk.Button(miFrameSlct,
+                            text="Ver contenido",
+                            command = lambda:generar_y_mostrar_txt(selectUser.get())
+                        )
 botonView.grid(row=2, column=0, pady=5, padx = 10)
 
-connect()
+botonSelect = ttk.Button(miFrameSlct, text = "Seleccionar", command = lambda:seleccion(select.get()))
+botonSelect.grid(row=2, column=1, pady=5, padx = 10)
+
+botonNewUser = ttk.Button(miFrameSlct, text = "Nuevo usuario", command = lambda:crear_usuario())
+botonNewUser.grid(row=3, column=0, pady=5, padx = 10)
+
+
+connect(selectUser.get())
 
 cantidad_defecto = IntVar()
 cantidad_defecto.set("1")

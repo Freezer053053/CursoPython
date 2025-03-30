@@ -1,0 +1,121 @@
+marcas:
+Aeroflex
+Agere Systems
+Achronix Semiconductor
+Allegro MicroSystems
+Altera (ahora parte de Intel)
+AMD (Advanced Micro Devices)
+Ambarella
+Amkor Technology
+Analog Devices
+Applied Materials
+ARM Holdings
+ASE Group (Advanced Semiconductor Engineering)
+ASML
+ASPEED Technology
+Avago Technologies (fusionada con Broadcom)
+Broadcom
+Broadcom Corporation
+Cadence Design Systems
+Cirrus Logic
+Conexant Systems
+Cypress Semiconductor
+Dialog Semiconductor
+Etron Technology
+Everspin Technologies
+Fairchild Semiconductor (ahora parte de ON Semiconductor)
+Freescale Semiconductor (fusionada con NXP)
+Fujitsu
+GlobalFoundries
+Hitachi
+IBM
+IC Insights
+IDT (Integrated Device Technology adquirida por Renesas)
+Imagination Technologies
+Infineon Technologies
+Intersil (adquirida por Renesas)
+Intel Corporation
+ISSI (Integrated Silicon Solution Inc.)
+Lite-On
+Lattice Semiconductor
+Macronix
+Macronix International
+Marvell Technology
+Maxim Integrated
+Maxim Integrated Circuits
+MediaTek
+Melexis
+Microchip Technology
+Micron Technology
+Microsemi Corporation
+Mitsubishi Electric
+National Semiconductor (adquirida por Texas Instruments)
+NVIDIA
+Nexperia
+NXP Semiconductors
+Omnivision Technologies
+ON Semiconductor
+Panasonic
+Pericom Semiconductor
+PixArt Imaging
+PLX Technology
+PMC-Sierra (ahora parte de Microsemi)
+Power Integrations
+Qorvo
+Qualcomm
+Realtek Semiconductor
+Renesas Electronics
+Renesas SP Drivers
+ROHM Group
+Rohm Semiconductor
+Samsung Electronics
+Seiko Epson
+Semtech
+SiTime
+Silicon Labs
+Silicon Motion
+SK Hynix
+SMIC (Semiconductor Manufacturing International Corporation)
+Sony Semiconductor
+Spreadtrum (ahora parte de UNISOC)
+STMicroelectronics
+Synopsys
+Texas Instruments
+Toshiba
+Tower Semiconductor
+Transphorm
+Triquint Semiconductor (fusionada con RF Micro Devices para formar Qorvo)
+Trident Microsystems
+TSMC (Taiwan Semiconductor Manufacturing Company)
+UMC (United Microelectronics Corporation)
+UNISOC
+Vishay Intertechnology
+Winbond Electronics
+Wolfspeed (antes parte de Cree Inc.)
+Xilinx
+Zilog
+
+tipos:
+ROM
+Microprocessor
+CMOS
+EEPROM
+Flash Memory
+Static RAM
+TTL
+ECL
+MOS
+I2L
+
+encapsulados:
+DIP
+PGA
+SOP
+TSOP
+QFP
+SOJ
+QFJ
+QFN
+TCP
+BGA
+LGA

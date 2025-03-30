@@ -1,0 +1,12 @@
+tipos:
+Electrolítico
+Electrolítico SMD
+Cerámico
+Cerámico SMD
+Film
+Mica
+Variable
+
+polarizados:
+Si
+No

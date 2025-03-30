@@ -1,0 +1,17 @@
+tipos:
+LED
+LED SMD
+
+tipos_sin_colores:
+Zener
+Zener SMD
+
+colores:
+Rojo
+Verde
+Azul
+Amarillo
+Naranja
+Morado
+Blanco
+Infrarrojo

@@ -1,0 +1,3 @@
+Para agregar un componente seleccionelo en las opciones dadas en la caja de selección, una vez seleccionado el componente haga click en 'Seleccionar' y luego rellene los campos requeridos, finalmente para añadir el componente haga click en 'Agregar'.
+
+Para ver los componentes agregados clique en 'Ver contenido'

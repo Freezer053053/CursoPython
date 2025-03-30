@@ -1,23 +1,6 @@
 Lista de Componentes:
 
-Tabla: Transistores
-(1, 'Transistor', 'PNP', 'SOT-23', '2L', 11)
-
-Tabla: Chips
-(1, 'Aeroflex', 'CMOS', 'SOJ', '22', 1)
-(2, 'Samsung Electronics', 'Microprocessor', 'LGA', 'i7 12900K', 1)
-
 Tabla: Diodos
-(1, 'LED', 'Rojo', 1.3, 8)
-(2, 'LED SMD', 'Naranja', 1.3, 15)
-(3, 'Zener SMD', None, 1.3, 1)
-
-Tabla: Resistencias
-(1, 'Fija', 220, 15)
-(2, 'Fija', 330, 15)
-(3, 'Variable', 1200, 3)
-
-Tabla: Capacitores
-(1, 'Electrolítico SMD', 'Si', 23, 23, 6.0)
-(2, 'Film', 'No', 200, 500, 8.0)
+(1, 'Zener SMD', None, 3, 1)
+(2, 'Zener SMD', None, 222, 1)
 

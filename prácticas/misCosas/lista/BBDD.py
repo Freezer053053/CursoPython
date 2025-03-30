@@ -117,13 +117,13 @@ def createTable():
         emergentes("conectado")
     #borrar()
 
-def connect():
+def connect(user):
     if check_connection():
         emergentes("ya conectado")
     else:
         global miConexion
         global miCursor
-        miConexion=sqlite3.connect("Componentes.db")
+        miConexion=sqlite3.connect(f"Componentes_{user}.db")
         miCursor=miConexion.cursor()
 
         if (check_connection()):
