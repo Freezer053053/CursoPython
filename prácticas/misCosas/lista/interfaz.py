@@ -32,7 +32,7 @@ def generar_y_mostrar_txt(user):
                         archivo.write(f"{componente}\n")
                     archivo.write("\n")
             
-            with open(f"lista_componentes.txt", "r", encoding="utf-8") as archivo:
+            with open(f"lista_componentes_{user}.txt", "r", encoding="utf-8") as archivo:
                 lista = archivo.read()
 
             messagebox.showinfo("Éxito", "Archivo 'lista_componentes.txt' creado con éxito.")
@@ -269,7 +269,7 @@ def ventanaDiodos():
             color.config(state="readonly")
 
     tipo = ttk.Combobox(frameDi,
-                        state="readonly",
+                        state = "readonly",
                         values = tipos_sin_colores + tipos)
     tipo.grid(row=0, column=1, pady=10)
     tipo.bind("<<ComboboxSelected>>", tipo_seleccionado)
@@ -503,7 +503,7 @@ botonNewUser = ttk.Button(miFrameSlct, text = "Nuevo usuario", command = lambda:
 botonNewUser.grid(row=3, column=0, pady=5, padx = 10)
 
 
-connect(selectUser.get())
+# connect(selectUser.get())
 
 cantidad_defecto = IntVar()
 cantidad_defecto.set("1")

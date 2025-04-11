@@ -6,6 +6,8 @@ def emergentes(error):
             return messagebox.showerror("Error", "Actualmente ya estás conectado a la BBDD")
         case "conectar":
             return messagebox.showinfo("Conectar", "Conexión establecida con éxito")
+        case "no_usuario":
+            return messagebox.showerror("Error", "Seleccione un usuario")
         case "no se pudo conectar":
             return messagebox.showerror("Error", "Conexión fallida")
         case "tabla creada":

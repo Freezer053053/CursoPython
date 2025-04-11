@@ -118,19 +118,24 @@ def createTable():
     #borrar()
 
 def connect(user):
-    if check_connection():
-        emergentes("ya conectado")
-    else:
-        global miConexion
-        global miCursor
-        miConexion=sqlite3.connect(f"Componentes_{user}.db")
-        miCursor=miConexion.cursor()
-
-        if (check_connection()):
-            emergentes("conectar")
-            createTable()
+    if user is not "":
+        if check_connection():
+            emergentes("ya conectado")
         else:
-            emergentes("no se pudo conectar")
+            global miConexion
+            global miCursor
+            miConexion=sqlite3.connect(f"Componentes_{user}.db")
+            miCursor=miConexion.cursor()
+
+            if (check_connection()):
+                emergentes("conectar")
+                print(f"conectado como {user}")
+                # print(type(user))
+                createTable()
+            else:
+                emergentes("no se pudo conectar")
+    else:
+        emergentes("no_usuario")
             
 def agregar(componente):
 

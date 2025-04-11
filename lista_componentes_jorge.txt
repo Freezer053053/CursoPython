@@ -1,12 +1,5 @@
 Lista de Componentes:
 
-Tabla: Chips
-(1, 'Agere Systems', 'Microprocessor', 'PGA', '222', 2)
-
 Tabla: Diodos
-(1, 'Zener SMD', None, 3, 1)
-(2, 'Zener SMD', None, 222, 1)
-
-Tabla: Capacitores
-(1, 'Electrolítico', 'Si', 23, 23, 1.0)
+(1, 'Zener', None, 20, 1)
 
