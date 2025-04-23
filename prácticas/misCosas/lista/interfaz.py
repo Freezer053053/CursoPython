@@ -57,7 +57,7 @@ def seleccion(opcion):
         case "Chip":
             ventanaIC()
         
-        case "Transistores":
+        case "Transistor":
             ventanaTransistores()
 
 def ventanaTransistores():

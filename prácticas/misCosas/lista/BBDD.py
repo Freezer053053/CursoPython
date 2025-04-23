@@ -136,6 +136,14 @@ def connect(user):
                 emergentes("no se pudo conectar")
     else:
         emergentes("no_usuario")
+
+def desconectar():
+    try:
+        miConexion.close()
+        emergentes("desconectar")
+    
+    except AttributeError:
+        emergentes("no_conectado")
             
 def agregar(componente):
 

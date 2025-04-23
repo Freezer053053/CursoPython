@@ -1,5 +1,8 @@
 Lista de Componentes:
 
+Tabla: Transistores
+(1, 'Transistor', 'TO-5', 'NPN', '2n', 3)
+
 Tabla: Chips
 (1, 'Achronix Semiconductor', 'Microprocessor', 'SOP', '222', 1)
 
