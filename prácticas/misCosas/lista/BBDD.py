@@ -58,64 +58,64 @@ def check_connection():
     except AttributeError as e:
         pass
 
-def createTable():
-    try:
-        miCursor.execute('''
-                         CREATE TABLE Capacitores (
-                         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         tipo TEXT,
-                         polarizado TEXT NOT NULL CHECK (polarizado IN ("Si", "No")),
-                         capacitancia DECIMAL,
-                         voltios DECIMAL,
-                         cantidad REAL
-                         )
-                         ''')
+# def createTable():
+#     try:
+#         miCursor.execute('''
+#                          CREATE TABLE Capacitores (
+#                          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#                          tipo TEXT,
+#                          polarizado TEXT NOT NULL CHECK (polarizado IN ("Si", "No")),
+#                          capacitancia DECIMAL,
+#                          voltios DECIMAL,
+#                          cantidad REAL
+#                          )
+#                          ''')
         
-        miCursor.execute('''
-                         CREATE TABLE Diodos (
-                         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         tipo TEXT,
-                         color TEXT,
-                         voltios DECIMAL,
-                         cantidad INTEGER
-                         )
-                         ''')
+#         miCursor.execute('''
+#                          CREATE TABLE Diodos (
+#                          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#                          tipo TEXT,
+#                          color TEXT,
+#                          voltios DECIMAL,
+#                          cantidad INTEGER
+#                          )
+#                          ''')
         
-        miCursor.execute('''
-                         CREATE TABLE Resistencias (
-                         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         tipo TEXT,
-                         valor DECIMAL,
-                         cantidad INTEGER
-                         )
-                         ''')
+#         miCursor.execute('''
+#                          CREATE TABLE Resistencias (
+#                          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#                          tipo TEXT,
+#                          valor DECIMAL,
+#                          cantidad INTEGER
+#                          )
+#                          ''')
         
-        miCursor.execute('''
-                         CREATE TABLE Chips (
-                         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         marca TEXT,
-                         tipo TEXT,
-                         encapsulado TEXT,
-                         modelo TEXT,
-                         cantidad INTEGER
-                         )
-                         ''')
+#         miCursor.execute('''
+#                          CREATE TABLE Chips (
+#                          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#                          marca TEXT,
+#                          tipo TEXT,
+#                          encapsulado TEXT,
+#                          modelo TEXT,
+#                          cantidad INTEGER
+#                          )
+#                          ''')
         
-        miCursor.execute('''
-                         CREATE TABLE Transistores (
-                         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         tipo TEXT,
-                         patillage TEXT,
-                         encapsulado TEXT,
-                         modelo TEXT,
-                         cantidad INTEGER
-                         )
-                         ''')
-        emergentes("tablas creadas")
-        emergentes("conectado")
-    except:
-        emergentes("conectado")
-    #borrar()
+#         miCursor.execute('''
+#                          CREATE TABLE Transistores (
+#                          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#                          tipo TEXT,
+#                          patillage TEXT,
+#                          encapsulado TEXT,
+#                          modelo TEXT,
+#                          cantidad INTEGER
+#                          )
+#                          ''')
+#         emergentes("tablas creadas")
+#         emergentes("conectado")
+#     except:
+#         emergentes("conectado")
+#     #borrar()
 
 def connect(user):
     if user is not "":
@@ -124,7 +124,7 @@ def connect(user):
         else:
             global miConexion
             global miCursor
-            miConexion=sqlite3.connect(f"Componentes_{user}.db")
+            miConexion=sqlite3.connect("BBDD.db")
             miCursor=miConexion.cursor()
 
             if (check_connection()):
@@ -157,7 +157,7 @@ def contenido():
         componentes = {}
         
         # Tablas a consultar
-        tablas = ["transistores", "Chips", "diodos", "resistencias", "capacitores"]
+        tablas = ["transistores", "chips", "diodos", "resistencias", "capacitores"]
         
         for tabla in tablas:
             query = f"SELECT * FROM {tabla}"

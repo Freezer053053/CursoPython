@@ -33,7 +33,7 @@ def cargar_propiedades_desde_txt(base, txt):
     # Determinar qué estamos leyendo (marcas o tipos)
     match txt:
         case "info_chips.txt":
-            cargar_marcas = False
+            # cargar_marcas = False
             cargar_tipos = False
             cargar_encapsulados = False
 
@@ -45,21 +45,21 @@ def cargar_propiedades_desde_txt(base, txt):
                     cargar_encapsulados = False
                     continue
                 elif linea.lower() == "tipos:":
-                    cargar_marcas = False
+                    # cargar_marcas = False
                     cargar_tipos = True
                     cargar_encapsulados = False
                     continue
                 elif linea.lower() == "encapsulados:":
-                    cargar_marcas = False
+                    # cargar_marcas = False
                     cargar_tipos = False
                     cargar_encapsulados = True
                     continue
                 
                 # Insertar en la tabla correspondiente
-                if cargar_marcas and linea != "":
-                    miCursor.execute("INSERT OR IGNORE INTO MARCAS (MARCA) VALUES (?)", (linea,))
-                    miCursor.execute("DELETE FROM MARCAS WHERE MARCA IS NULL OR MARCA = '';")
-                elif cargar_tipos and linea != "":
+                # if cargar_marcas and linea != "":
+                #     miCursor.execute("INSERT OR IGNORE INTO MARCAS (MARCA) VALUES (?)", (linea,))
+                #     miCursor.execute("DELETE FROM MARCAS WHERE MARCA IS NULL OR MARCA = '';")
+                if cargar_tipos and linea != "":
                     miCursor.execute("INSERT OR IGNORE INTO TIPOS (TIPO) VALUES (?)", (linea,))
                     miCursor.execute("DELETE FROM TIPOS WHERE TIPO IS NULL OR TIPO = '';")
                 elif cargar_encapsulados and linea != "":

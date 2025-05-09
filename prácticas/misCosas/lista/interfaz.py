@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from utils import emergentes
+from crearBBDD import create
+from crearBBDD import *
 from BBDD import *
 from BBDD import insertar_o_actualizar_componente
 from fingerprints import cargar_propiedades_desde_txt
@@ -436,6 +438,8 @@ root.geometry('275x150')
 miFrameSlct = Frame(root)
 miFrameSlct.config(width = 600, height = 400)
 miFrameSlct.pack()
+
+create()
 
 #-------------------------------------------MENU_SUPERIOR-------------------------------------------#
 barraMenu = Menu(root)
