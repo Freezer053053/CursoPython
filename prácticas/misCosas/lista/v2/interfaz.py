@@ -2,7 +2,15 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from utils import emergentes
+from BBDD import create
+from BBDD import createUser
+from BBDD import obtener_datos_desde_bd
 
+def avisoLicencia():
+    with open(f"prácticas/misCosas/lista/licencia.txt", "r", encoding="utf-8") as archivo:
+        licencia = archivo.read()
+
+    messagebox.showinfo("Licencia", licencia)
 
 def ayuda():
     with open(f"prácticas/misCosas/lista/ayuda.txt", "r", encoding="utf-8") as archivo:
@@ -99,12 +107,58 @@ def ventanaCapacitor():
 
     botonAgregar=Button(frameCap, text="Agregar", width=20, command=lambda:agregar_capacitor())
     botonAgregar.grid(row=5, column=0, columnspan=2, pady=3)
+#-------------------------------------------CREACION_USUARIOS-------------------------------------------#
+def newUser():
+
+    def addUser():
+        datos = {
+            "nombre": name.get(),
+            "ApPaterno": ApP.get(),
+            "ApMaterno": ApM.get()
+        }
+
+        if all(datos.values()):  # Validación de que todos los campos estén llenos
+            exito = createUser("usuarios", datos, ["nombre", "ApPaterno", "ApMaterno"])
+            if exito:
+                messagebox.showinfo("Éxito", "Usuario agregado con éxito.")
+            else:
+                messagebox.showerror("Error", "No se pudo agregar el usuario.")
+        else:
+            messagebox.showerror("Error", "Todos los campos son obligatorios.")
+
+    newUser = Toplevel(root)
+    newUser.title("Agregar usuarios")
+    newUser.geometry('300x200')
+    frameUs = Frame(newUser)
+    frameUs.pack()
+
+    labelNombre = Label(frameUs, text="Nombre del usuario:")
+    labelNombre.grid(row=0, column=0, padx=5)
+    name = Entry(frameUs)
+    name.grid(row=0, column=1, pady=10)
+
+    labelApP = Label(frameUs, text="Apellido paterno:")
+    labelApP.grid(row=1, column=0, padx=5)
+    ApP = Entry(frameUs)
+    ApP.grid(row=1, column=1, pady=10)
+
+    labelApM = Label(frameUs, text="Apellido materno:")
+    labelApM.grid(row=2, column=0, padx=5)
+    ApM = Entry(frameUs)
+    ApM.grid(row=2, column=1, pady=10)
+
+    botonAceptar=Button(frameUs, text="Aceptar", width=20, command=lambda:addUser())
+    botonAceptar.grid(row=3, column=0, columnspan=2, pady=3)
+
+    
 
 #-------------------------------------------VENTANA_PRINCIPAL-------------------------------------------#
 root = Tk()
 root.title("Gestión de componentes")
 #root.resizable(0, 0)
 root.geometry('275x150')
+
+create()
 
 miFrameSlct = Frame(root)
 miFrameSlct.config(width = 600, height = 400)
@@ -140,9 +194,11 @@ ayudaMenu.add_command(label = "Licencia", command = lambda:avisoLicencia())
 ayudaMenu.add_command(label = "Como usar el programa", command = lambda:ayuda())
 
 #--------------------------opciones-------------------------
+usuarios = obtener_datos_desde_bd("BBDD.db", "usuarios", "nombre")
+
 selectUser = ttk.Combobox(miFrameSlct,
                           state = "readonly",
-                        #   values = usuarios
+                          values = usuarios
                           )
 selectUser.grid(row=0, column=1, pady=5, padx=10, columnspan=3)
 
@@ -173,7 +229,7 @@ botonView.grid(row=2, column=0, pady=5, padx = 10)
 botonSelect = ttk.Button(miFrameSlct, text = "Seleccionar", command = lambda:seleccion(select.get()))
 botonSelect.grid(row=2, column=1, pady=5, padx = 10)
 
-botonNewUser = ttk.Button(miFrameSlct, text = "Nuevo usuario", command = lambda:crear_usuario())
+botonNewUser = ttk.Button(miFrameSlct, text = "Nuevo usuario", command = lambda:newUser())
 botonNewUser.grid(row=3, column=0, pady=5, padx = 10)
 
 

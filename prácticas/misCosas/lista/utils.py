@@ -18,4 +18,4 @@ def emergentes(error):
             return messagebox.showinfo("Info", "Aún no estas conectado a la BBDD")
         case "conectado":
             return messagebox.showinfo("Info", "Conectado a tablas existentes: Capacitores, Diodos, Resistencias, Chips y Transistores")
-
+        
