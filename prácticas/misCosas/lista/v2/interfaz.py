@@ -5,6 +5,7 @@ from utils import emergentes
 from BBDD import create
 from BBDD import createUser
 from BBDD import obtener_datos_desde_bd
+from BBDD import eraseUser
 
 def avisoLicencia():
     with open(f"prácticas/misCosas/lista/licencia.txt", "r", encoding="utf-8") as archivo:
@@ -20,22 +21,102 @@ def ayuda():
 
 #-------------------------------------------VENTANAS_COMPONENTES-------------------------------------------#
 def seleccion(opcion):
-    match opcion:
-        case "Capacitor":
-            ventanaCapacitor()
-        
-        case "Resistencia":
-            ventanaResistencias()
 
-        case "Diodo":
-            ventanaDiodos()
-        
-        case "Chip":
-            ventanaIC()
-        
-        case "Transistor":
-            ventanaTransistores()
+    if selectUser.get() == "" or select.get() == "":
+        messagebox.showerror("Error", "Selecciona un usuario y componente primero.")
+        return
+    else:
+        match opcion:
+            case "Capacitor":
+                ventanaCapacitor()
+            
+            case "Resistencia":
+                ventanaResistencias()
 
+            case "Diodo":
+                ventanaDiodos()
+            
+            case "Chip":
+                ventanaIC()
+            
+            case "Transistor":
+                ventanaTransistores()
+
+def ventanaIC():
+    # cargar_propiedades_desde_txt("chips.db", "info_chips.txt")
+
+    def agregar_ic():
+        datos = {
+            "marca": marca.get(),
+            "tipo": tipo.get(),
+            "encapsulado": encapsulado.get(),
+            "modelo": modelo.get(),
+            "cantidad": cantidad.get()
+        }
+
+        if all(datos.values()):  # Validación de que todos los campos estén llenos
+            exito = insertar_o_actualizar_componente("Chips", datos, ["marca", "tipo", "encapsulado", "modelo"])
+            if exito:
+                messagebox.showinfo("Éxito", "Circuito integrado agregado o actualizado con éxito.")
+            else:
+                messagebox.showerror("Error", "No se pudo agregar o actualizar el circuito integrado.")
+        else:
+            messagebox.showerror("Error", "Todos los campos son obligatorios.")
+
+
+
+    ic = Toplevel(root)
+    ic.title("Circuitos integrados")
+    ic.geometry("300x400")
+    frameIC = Frame(ic)
+    frameIC.pack()
+
+    labelMarca = Label(frameIC, text="Marca: ")
+    labelMarca.grid(row=0, column=0, padx=5)
+
+
+    marcas = obtener_datos_desde_bd("chips.db", "MARCAS", "MARCA")
+
+    marca = ttk.Combobox(frameIC,
+                    state = "readonly",
+                    values = marcas
+                    )
+    marca.grid(row=0, column=1, pady=10)
+
+    labelTipo = Label(frameIC, text="Tipo: ")
+    labelTipo.grid(row=1, column=0, padx=5)
+
+    tipos = obtener_datos_desde_bd("chips.db", "TIPOS", "TIPO")
+
+    tipo = ttk.Combobox(frameIC,
+                    state = "readonly",
+                    values = tipos
+                    )
+    tipo.grid(row=1, column=1, pady=10)
+    
+    labelEncapsulado = Label(frameIC, text="Encapsulado: ")
+    labelEncapsulado.grid(row=2, column=0, padx=5)
+
+    encapsulados = obtener_datos_desde_bd("chips.db", "ENCAPSULADOS", "ENCAPSULADO")
+
+    encapsulado = ttk.Combobox(frameIC,
+                    state = "readonly",
+                    values = encapsulados
+                    )
+    encapsulado.grid(row=2, column=1, pady=10)
+
+    labelModelo = Label(frameIC, text="Modelo: ")
+    labelModelo.grid(row=3, column=0, padx=5)
+    modelo = Entry(frameIC)
+    modelo.grid(row=3, column=1, pady=10)
+
+    labelCant = Label(frameIC, text="Cantidad: ")
+    labelCant.grid(row=4, column=0, padx=5)
+    cantidad = Entry(frameIC, textvariable=cantidad_defecto)
+    cantidad.grid(row=4, column=1, pady=10)
+
+    botonAgregar=Button(frameIC, text="Agregar", width=20, command=lambda:agregar_ic())
+    botonAgregar.grid(row=5, column=0, columnspan=2, pady=3)
 
 def ventanaCapacitor():
     '''Ventana para introducir los valores de los capacitores'''
@@ -107,8 +188,9 @@ def ventanaCapacitor():
 
     botonAgregar=Button(frameCap, text="Agregar", width=20, command=lambda:agregar_capacitor())
     botonAgregar.grid(row=5, column=0, columnspan=2, pady=3)
-#-------------------------------------------CREACION_USUARIOS-------------------------------------------#
+#-------------------------------------------AGREGAR_USUARIOS-------------------------------------------#
 def newUser():
+    '''Ventana para agregar un nuevo usuario'''
 
     def addUser():
         datos = {
@@ -121,10 +203,16 @@ def newUser():
             exito = createUser("usuarios", datos, ["nombre", "ApPaterno", "ApMaterno"])
             if exito:
                 messagebox.showinfo("Éxito", "Usuario agregado con éxito.")
+                actualizar_combobox()  # Llamar a la función para actualizar la lista de usuarios
             else:
                 messagebox.showerror("Error", "No se pudo agregar el usuario.")
         else:
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
+
+    def actualizar_combobox():
+        usuarios_actualizados = obtener_datos_desde_bd("BBDD.db", "usuarios", "nombre")
+        selectUser['values'] = usuarios_actualizados  # Actualizar los valores del Combobox
+
 
     newUser = Toplevel(root)
     newUser.title("Agregar usuarios")
@@ -150,7 +238,41 @@ def newUser():
     botonAceptar=Button(frameUs, text="Aceptar", width=20, command=lambda:addUser())
     botonAceptar.grid(row=3, column=0, columnspan=2, pady=3)
 
-    
+#-------------------------------------------ELIMINAR_USUARIOS-------------------------------------------#
+def delUser():
+    '''Ventana para eliminar un usuario existente'''
+
+    def deleteUser():
+        nombre_usuario = selectUser.get()
+        if nombre_usuario:
+            eraseUser(nombre_usuario)  # Llamar a la función para eliminar el usuario
+            # Actualizar el Combobox después de eliminar el usuario
+            actualizar_combobox()
+            messagebox.showinfo("Éxito", "Usuario eliminado con éxito.")
+        else:
+            messagebox.showerror("Error", "Seleccione un usuario para eliminar.")
+
+    def actualizar_combobox():
+        usuarios_actualizados = obtener_datos_desde_bd("BBDD.db", "usuarios", "nombre")
+        selectUser['values'] = usuarios_actualizados  # Actualizar los valores del Combobox
+
+    delUser = Toplevel(root)
+    delUser.title("Eliminar usuarios")
+    delUser.geometry('300x200')
+    frameUs = Frame(delUser)
+    frameUs.pack()
+
+    labelSelect = Label(frameUs, text="Selecciona un usuario:")
+    labelSelect.grid(row=0, column=0, padx=5)
+
+    selectUserDel = ttk.Combobox(frameUs,
+                          state = "readonly",
+                          values = obtener_datos_desde_bd("BBDD.db", "usuarios", "nombre")
+                          )
+    selectUserDel.grid(row=0, column=1, pady=10)
+
+    botonEliminar=Button(frameUs, text="Eliminar", width=20, command=lambda:deleteUser())
+    botonEliminar.grid(row=1, column=0, columnspan=2, pady=3)
 
 #-------------------------------------------VENTANA_PRINCIPAL-------------------------------------------#
 root = Tk()
@@ -207,14 +329,14 @@ labelUser.grid(row=0, column=0, sticky="e")
 
 # cargar_propiedades_desde_txt("all_components.db", "componentes.txt")
 
-# componentes = obtener_datos_desde_bd("all_components.db", "TIPOS", "TIPO")
+componentes = obtener_datos_desde_bd("BBDD.db", "tipos_componentes", "nombre_tipo")
 
 labelSelect = Label(miFrameSlct, text="Componente:")
 labelSelect.grid(row=1, column=0, sticky="e")
 
 select = ttk.Combobox(miFrameSlct,
                     state = "readonly",
-                    # values = componentes
+                    values = componentes
                     )
 select.grid(row=1, column=1, pady=5, padx = 10)
 
@@ -231,6 +353,9 @@ botonSelect.grid(row=2, column=1, pady=5, padx = 10)
 
 botonNewUser = ttk.Button(miFrameSlct, text = "Nuevo usuario", command = lambda:newUser())
 botonNewUser.grid(row=3, column=0, pady=5, padx = 10)
+
+botonDelUser = ttk.Button(miFrameSlct, text = "Eliminar usuario", command = lambda:delUser())
+botonDelUser.grid(row=3, column=1, pady=5, padx = 10)
 
 
 # connect(selectUser.get())

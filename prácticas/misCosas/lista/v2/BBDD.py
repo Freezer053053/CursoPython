@@ -6,6 +6,7 @@ miCursor = None
 
 miConexion=sqlite3.connect("BBDD.db")
 miCursor=miConexion.cursor()
+
 def create():
     miCursor.execute('''
 
@@ -136,6 +137,29 @@ def create():
 
     emergentes("creada")
     # miConexion.close()
+    loadComponents()
+
+def loadComponents():
+    miConexion = sqlite3.connect("BBDD.db")
+    miCursor = miConexion.cursor()
+
+    # Obtener los componentes ya existentes
+    miCursor.execute("SELECT nombre_tipo FROM tipos_componentes")
+    existentes = {fila[0] for fila in miCursor.fetchall()}  # Convertir a conjunto para evitar duplicados
+
+    # Lista de componentes iniciales
+    componentes = ["Resistencia", "Capacitor", "Diodo", "Transistor", "IC"]
+
+    # Insertar componentes evitando duplicados
+    for componente in componentes:
+        if componente not in existentes:  # Solo insertar si no está ya en la tabla
+            miCursor.execute("INSERT INTO tipos_componentes (nombre_tipo) VALUES (?);", (componente,))
+
+    # Guardar cambios y cerrar conexión
+    miConexion.commit()
+    miConexion.close()
+
+    
 
 def obtener_datos_desde_bd(base, tabla, columna):
     miConexion = sqlite3.connect(base)
@@ -173,3 +197,14 @@ def createUser(tabla, datos, columnas_clave):
     except Exception as e:
         print(f"Error al insertar el usuario: {e}")
         return False
+
+def eraseUser(nombre_usuario):
+    # Verificar si el usuario existe
+     
+    miConexion = sqlite3.connect("BBDD.db")
+    miCursor = miConexion.cursor()
+
+    # Eliminar el usuario de la base de datos
+    miCursor.execute("DELETE FROM usuarios WHERE nombre=?", (nombre_usuario,))
+    miConexion.commit()
+    miConexion.close()
