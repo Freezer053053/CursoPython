@@ -26,11 +26,11 @@ def cargar_propiedades_desde_txt(base, txt):
 
     connect(base)
 
-    # Leer el archivo txt
+    # Leer el archivo .txt
     with open(f"prácticas/misCosas/lista/{txt}", "r", encoding="utf-8") as archivo:
         lineas = archivo.readlines()
 
-    # Determinar qué estamos leyendo (marcas o tipos)
+    # Determinar qué está leyendo (marcas o tipos)
     match txt:
         case "info_chips.txt":
             # cargar_marcas = False

@@ -36,7 +36,7 @@ def seleccion(opcion):
             case "Diodo":
                 ventanaDiodos()
             
-            case "Chip":
+            case "IC":
                 ventanaIC()
             
             case "Transistor":
