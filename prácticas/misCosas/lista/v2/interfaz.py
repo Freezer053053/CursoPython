@@ -6,6 +6,9 @@ from BBDD import create
 from BBDD import createUser
 from BBDD import obtener_datos_desde_bd
 from BBDD import eraseUser
+from BBDD import obtener_id_marca
+from BBDD import obtener_id_tipo
+from BBDD import insertar_o_actualizar_componente
 
 def avisoLicencia():
     with open(f"prácticas/misCosas/lista/licencia.txt", "r", encoding="utf-8") as archivo:
@@ -44,19 +47,34 @@ def seleccion(opcion):
 
 def ventanaIC():
     # cargar_propiedades_desde_txt("chips.db", "info_chips.txt")
+    
+    
 
     def agregar_ic():
-        datos = {
-            "marca": marca.get(),
+
+        id_marca = obtener_id_marca(marca.get())  # Buscar el id de la marca
+
+        if id_marca is None:
+            messagebox.showerror("Error", "La marca ingresada no existe en la base de datos.")
+            return  # Salimos si la marca no está en la tabla fabricantes
+
+
+        datosChip = {
             "tipo": tipo.get(),
             "encapsulado": encapsulado.get(),
             "modelo": modelo.get(),
-            "cantidad": cantidad.get()
+           }
+        datosComponente = {
+        "id_tipo": obtener_id_tipo("IC"),
+        "id_fabricante": id_marca,
+        "cantidad": cantidad.get()
         }
 
-        if all(datos.values()):  # Validación de que todos los campos estén llenos
-            exito = insertar_o_actualizar_componente("Chips", datos, ["marca", "tipo", "encapsulado", "modelo"])
-            if exito:
+        if all(datosChip.values()) and all(datosComponente.values()):  
+            exito_chip = insertar_o_actualizar_componente("chips", datosChip, ["tipo_chip", "encapsulado", "nombre_chip"])
+            exito_componente = insertar_o_actualizar_componente("componentes", datosComponente, ["id_tipo", "id_fabricante"])
+            
+            if exito_chip and exito_componente:
                 messagebox.showinfo("Éxito", "Circuito integrado agregado o actualizado con éxito.")
             else:
                 messagebox.showerror("Error", "No se pudo agregar o actualizar el circuito integrado.")
