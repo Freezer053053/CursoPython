@@ -9,6 +9,7 @@ from BBDD import eraseUser
 from BBDD import obtener_id_marca
 from BBDD import obtener_id_tipo
 from BBDD import insertar_o_actualizar_componente
+from BBDD import cargar_propiedades_desde_txt
 
 def avisoLicencia():
     with open(f"prácticas/misCosas/lista/licencia.txt", "r", encoding="utf-8") as archivo:
@@ -40,6 +41,7 @@ def seleccion(opcion):
                 ventanaDiodos()
             
             case "IC":
+                cargar_propiedades_desde_txt("BBDD.db", "info_chips.txt")
                 ventanaIC()
             
             case "Transistor":
@@ -60,19 +62,19 @@ def ventanaIC():
 
 
         datosChip = {
-            "tipo": tipo.get(),
-            "encapsulado": encapsulado.get(),
-            "modelo": modelo.get(),
-           }
+            "tipo_chip": tipo.get(),
+            "encapsulado": encapsulado.get()
+            }
         datosComponente = {
-        "id_tipo": obtener_id_tipo("IC"),
-        "id_fabricante": id_marca,
-        "cantidad": cantidad.get()
-        }
+            "nombre": modelo.get(),
+            "id_tipo": obtener_id_tipo("IC"),
+            "id_fabricante": id_marca,
+            "cantidad": cantidad.get()
+            }
 
         if all(datosChip.values()) and all(datosComponente.values()):  
             exito_chip = insertar_o_actualizar_componente("chips", datosChip, ["tipo_chip", "encapsulado", "nombre_chip"])
-            exito_componente = insertar_o_actualizar_componente("componentes", datosComponente, ["id_tipo", "id_fabricante"])
+            exito_componente = insertar_o_actualizar_componente("componentes", datosComponente, ["nombre", "id_tipo", "id_fabricante", "cantidad"])
             
             if exito_chip and exito_componente:
                 messagebox.showinfo("Éxito", "Circuito integrado agregado o actualizado con éxito.")

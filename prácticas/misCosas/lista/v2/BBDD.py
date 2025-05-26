@@ -8,10 +8,10 @@ miConexion=sqlite3.connect("BBDD.db")
 miCursor=miConexion.cursor()
 
 def cargar_propiedades_desde_txt(base, txt):
+    '''Carga las propiedades de un txt a una base de datos, evitando duplicados.'''
+
     miConexion = sqlite3.connect(base)
     miCursor = miConexion.cursor()
-
-    # connect(base)
 
     # Leer el archivo .txt
     with open(f"prácticas/misCosas/lista/{txt}", "r", encoding="utf-8") as archivo:
@@ -42,16 +42,21 @@ def cargar_propiedades_desde_txt(base, txt):
                     cargar_encapsulados = True
                     continue
                 
-                # Insertar en la tabla correspondiente
-                if cargar_marcas and linea != "":
-                    miCursor.execute("INSERT OR IGNORE INTO fabricantes (nombre_fabricante) VALUES (?)", (linea,))
-                    miCursor.execute("DELETE FROM fabricantes WHERE nombre_fabricante IS NULL OR nombre_fabricante = '';")
-                elif cargar_tipos and linea != "":
-                    miCursor.execute("INSERT OR IGNORE INTO TIPOS (TIPO) VALUES (?)", (linea,))
-                    miCursor.execute("DELETE FROM TIPOS WHERE TIPO IS NULL OR TIPO = '';")
-                elif cargar_encapsulados and linea != "":
-                    miCursor.execute("INSERT OR IGNORE INTO ENCAPSULADOS (ENCAPSULADO) VALUES (?)", (linea,))
-                    miCursor.execute("DELETE FROM ENCAPSULADOS WHERE ENCAPSULADO IS NULL OR ENCAPSULADO = '';")
+                # Insertar en la tabla correspondiente si no existe
+                if cargar_marcas and linea:
+                    miCursor.execute("SELECT COUNT(*) FROM fabricantes WHERE nombre_fabricante = ?", (linea,))
+                    if miCursor.fetchone()[0] == 0:
+                        miCursor.execute("INSERT INTO fabricantes (nombre_fabricante) VALUES (?)", (linea,))
+
+                elif cargar_tipos and linea:
+                    miCursor.execute("SELECT COUNT(*) FROM chips WHERE tipo_chip = ?", (linea,))
+                    if miCursor.fetchone()[0] == 0:
+                        miCursor.execute("INSERT INTO chips (tipo_chip) VALUES (?)", (linea,))
+
+                elif cargar_encapsulados and linea:
+                    miCursor.execute("SELECT COUNT(*) FROM chips WHERE encapsulado = ?", (linea,))
+                    if miCursor.fetchone()[0] == 0:
+                        miCursor.execute("INSERT INTO chips (encapsulado) VALUES (?)", (linea,))
 
             miConexion.commit()
             miConexion.close()
@@ -197,7 +202,7 @@ def cargar_propiedades_desde_txt(base, txt):
             print("Conexión cerrada")
 
 def obtener_id_tipo(nombre_tipo):
-    """Obtiene el id_tipo dado su nombre en la tabla tipos_componentes."""
+    """Obtiene el id_tipo dado su nombre en la tabla tipos_componentes. (nombre_tipo)"""
     miConexion = sqlite3.connect("BBDD.db")
     miCursor = miConexion.cursor()
 
@@ -209,7 +214,7 @@ def obtener_id_tipo(nombre_tipo):
     return resultado[0] if resultado else None  # Retorna el ID si existe, sino None
 
 def obtener_id_marca(nombre_marca):
-    """Obtiene el id_fabricante dado su nombre."""
+    """Obtiene el id_fabricante dado su nombre. (nombre_marca)"""
     miConexion = sqlite3.connect("BBDD.db")
     miCursor = miConexion.cursor()
 
@@ -371,7 +376,78 @@ def loadComponents():
     miConexion.commit()
     miConexion.close()
 
-    
+def insertar_o_actualizar_componente(tabla, datos, columnas_clave):
+    '''Inserta o actualiza un componente en la base de datos. (tabla, datos, columnas_clave)'''
+
+    try:
+        # Verificar si la tabla tiene la columna 'cantidad'
+        miConexion = sqlite3.connect("BBDD.db")
+        miCursor = miConexion.cursor()
+
+        miCursor.execute(f"PRAGMA table_info({tabla})")
+        columnas_tabla = [columna[1] for columna in miCursor.fetchall()]  # Obtener nombres de columna
+        
+        tiene_cantidad = "cantidad" in columnas_tabla  # Verificar si la tabla tiene 'cantidad'
+
+        # Filtrar las columnas clave según los valores relevantes
+        columnas_clave_validas = [col for col in columnas_clave if datos.get(col) is not None]
+        where_clause = " AND ".join([f"{col} = ?" for col in columnas_clave_validas])
+        valores_where = [datos[col] for col in columnas_clave_validas]
+
+        if tiene_cantidad:
+            # Consultar si ya existe el componente (solo si la tabla tiene cantidad)
+            query_buscar = f"SELECT cantidad FROM {tabla} WHERE {where_clause}"
+            miCursor.execute(query_buscar, tuple(valores_where))
+            resultado = miCursor.fetchone()
+
+            if resultado:
+                # Si el componente ya existe, actualizar la cantidad
+                nueva_cantidad = int(resultado[0]) + int(datos.get("cantidad", 0))
+                query_actualizar = f"UPDATE {tabla} SET cantidad = ? WHERE {where_clause}"
+                miCursor.execute(query_actualizar, (nueva_cantidad, *valores_where))
+                filas_afectadas = miCursor.rowcount  # Verificar filas actualizadas
+            else:
+                # Si no existe, insertar una nueva fila
+                columnas = ", ".join(datos.keys())
+                valores = ", ".join(["?"] * len(datos))
+                query_insertar = f"INSERT INTO {tabla} ({columnas}) VALUES ({valores})"
+                miCursor.execute(query_insertar, tuple(datos.values()))
+                filas_afectadas = miCursor.rowcount  # Verificar filas insertadas
+
+        else:
+            # Si la tabla no tiene 'cantidad', hacer solo la inserción normal
+            columnas = ", ".join(datos.keys())
+            valores = ", ".join(["?"] * len(datos))
+            query_insertar = f"INSERT INTO {tabla} ({columnas}) VALUES ({valores})"
+            miCursor.execute(query_insertar, tuple(datos.values()))
+            filas_afectadas = miCursor.rowcount
+
+        miConexion.commit()
+
+        # Verificar si se afectaron filas
+        if filas_afectadas > 0:
+            print(f"{tabla} - Componente actualizado o insertado correctamente: {datos}")
+            return True
+        else:
+            print(f"{tabla} - No se pudo insertar ni actualizar el componente: {datos}")
+            return False
+
+    except sqlite3.Error as e:
+        print(f"Error SQL en '{tabla}': {e}")
+        print(f"Consulta ejecutada: {query_buscar if tiene_cantidad else 'Sin consulta cantidad'}")
+        print(f"Valores usados: {valores_where if columnas_clave_validas else 'Sin valores clave'}")
+        return False
+
+    except Exception as e:
+        print(f"Error inesperado en '{tabla}': {e}")
+        print(f"Datos procesados: {datos}")
+        return False
+
+    finally:
+        miCursor.close()
+        miConexion.close()
+
+
 
 def obtener_datos_desde_bd(base, tabla, columna):
     miConexion = sqlite3.connect(base)

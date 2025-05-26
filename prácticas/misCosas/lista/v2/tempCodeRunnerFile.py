@@ -1,1 +1,1 @@
-componentes
+chips.db
