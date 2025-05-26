@@ -377,50 +377,36 @@ def loadComponents():
     miConexion.close()
 
 def insertar_o_actualizar_componente(tabla, datos, columnas_clave):
-    '''Inserta o actualiza un componente en la base de datos. (tabla, datos, columnas_clave)'''
+    '''Inserta o actualiza un componente en la base de datos.'''
 
     try:
-        # Verificar si la tabla tiene la columna 'cantidad'
         miConexion = sqlite3.connect("BBDD.db")
         miCursor = miConexion.cursor()
 
-        miCursor.execute(f"PRAGMA table_info({tabla})")
-        columnas_tabla = [columna[1] for columna in miCursor.fetchall()]  # Obtener nombres de columna
-        
-        tiene_cantidad = "cantidad" in columnas_tabla  # Verificar si la tabla tiene 'cantidad'
-
-        # Filtrar las columnas clave según los valores relevantes
-        columnas_clave_validas = [col for col in columnas_clave if datos.get(col) is not None]
+        # Filtrar columnas clave para evitar que 'cantidad' influya en la búsqueda
+        columnas_clave_validas = [col for col in columnas_clave if datos.get(col) is not None and col != "cantidad"]
         where_clause = " AND ".join([f"{col} = ?" for col in columnas_clave_validas])
         valores_where = [datos[col] for col in columnas_clave_validas]
 
-        if tiene_cantidad:
-            # Consultar si ya existe el componente (solo si la tabla tiene cantidad)
-            query_buscar = f"SELECT cantidad FROM {tabla} WHERE {where_clause}"
-            miCursor.execute(query_buscar, tuple(valores_where))
-            resultado = miCursor.fetchone()
+        # Buscar el componente sin usar 'cantidad' como criterio de búsqueda
+        query_buscar = f"SELECT id_componente, cantidad FROM {tabla} WHERE {where_clause}"
+        miCursor.execute(query_buscar, tuple(valores_where))
+        resultado = miCursor.fetchone()
 
-            if resultado:
-                # Si el componente ya existe, actualizar la cantidad
-                nueva_cantidad = int(resultado[0]) + int(datos.get("cantidad", 0))
-                query_actualizar = f"UPDATE {tabla} SET cantidad = ? WHERE {where_clause}"
-                miCursor.execute(query_actualizar, (nueva_cantidad, *valores_where))
-                filas_afectadas = miCursor.rowcount  # Verificar filas actualizadas
-            else:
-                # Si no existe, insertar una nueva fila
-                columnas = ", ".join(datos.keys())
-                valores = ", ".join(["?"] * len(datos))
-                query_insertar = f"INSERT INTO {tabla} ({columnas}) VALUES ({valores})"
-                miCursor.execute(query_insertar, tuple(datos.values()))
-                filas_afectadas = miCursor.rowcount  # Verificar filas insertadas
-
+        if resultado:
+            # Si el componente ya existe, actualizar la cantidad
+            id_componente, cantidad_actual = resultado
+            nueva_cantidad = cantidad_actual + int(datos.get("cantidad", 0))
+            query_actualizar = f"UPDATE {tabla} SET cantidad = ? WHERE id_componente = ?"
+            miCursor.execute(query_actualizar, (nueva_cantidad, id_componente))
+            filas_afectadas = miCursor.rowcount  # Verificar filas actualizadas
         else:
-            # Si la tabla no tiene 'cantidad', hacer solo la inserción normal
+            # Si no existe, insertar un nuevo registro
             columnas = ", ".join(datos.keys())
             valores = ", ".join(["?"] * len(datos))
             query_insertar = f"INSERT INTO {tabla} ({columnas}) VALUES ({valores})"
             miCursor.execute(query_insertar, tuple(datos.values()))
-            filas_afectadas = miCursor.rowcount
+            filas_afectadas = miCursor.rowcount  # Verificar filas insertadas
 
         miConexion.commit()
 
@@ -434,8 +420,8 @@ def insertar_o_actualizar_componente(tabla, datos, columnas_clave):
 
     except sqlite3.Error as e:
         print(f"Error SQL en '{tabla}': {e}")
-        print(f"Consulta ejecutada: {query_buscar if tiene_cantidad else 'Sin consulta cantidad'}")
-        print(f"Valores usados: {valores_where if columnas_clave_validas else 'Sin valores clave'}")
+        print(f"Consulta ejecutada: {query_buscar}")
+        print(f"Valores usados: {valores_where}")
         return False
 
     except Exception as e:
@@ -446,6 +432,8 @@ def insertar_o_actualizar_componente(tabla, datos, columnas_clave):
     finally:
         miCursor.close()
         miConexion.close()
+
+
 
 
 
