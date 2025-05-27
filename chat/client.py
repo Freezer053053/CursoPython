@@ -2,10 +2,12 @@ import socket
 import sys
 import os
 import platform
+import errno
 
 HEADER_LENGTH = 10
 
-IP = "127.0.0.1"
+IP = input("Introduce la ip: ")
+IP = str(IP)
 PORT = 1234
 
 def receive_messages(sock):
@@ -23,6 +25,12 @@ def receive_messages(sock):
             message = sock.recv(message_length).decode('utf-8')
 
             print(f"\n{username} > {message}")
+        except IOError as e:
+            if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+                # No hay datos por ahora, continuar
+                continue
+            print("Error receiving message:", str(e))
+            sys.exit()
         except Exception as e:
             print("Error receiving message:", str(e))
             sys.exit()
@@ -62,4 +70,19 @@ else:
                     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
                     client_socket.send(message_header + message)
             else:
-                receive_messages(client_socket)
+                try:
+                    username_header = client_socket.recv(HEADER_LENGTH)
+                    if not len(username_header):
+                        print("Connection closed by the server")
+                        sys.exit()
+                    username_length = int(username_header.decode('utf-8').strip())
+                    username = client_socket.recv(username_length).decode('utf-8')
+
+                    message_header = client_socket.recv(HEADER_LENGTH)
+                    message_length = int(message_header.decode('utf-8').strip())
+                    message = client_socket.recv(message_length).decode('utf-8')
+
+                    print(f"\n{username} > {message}")
+                except Exception as e:
+                    print("Error receiving message:", str(e))
+                    sys.exit()
