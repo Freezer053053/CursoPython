@@ -58,7 +58,7 @@ if os.name == "nt" or platform.system() == "Windows":
             client_socket.send(message_header + message)
 else:
     # Unix: usar select
-    import select
+    import select 
     while True:
         sockets_list = [sys.stdin, client_socket]
         read_sockets, _, _ = select.select(sockets_list, [], [])

@@ -1,5 +1,6 @@
 import socket
 import select
+import threading
 
 HEADER_LENGTH = 10
 
@@ -30,6 +31,9 @@ sockets_list = [server_socket]
 
 clients = {}
 
+# Guardar las direcciones de los clientes
+client_addresses = {}
+
 def receive_message(client_socket):
     try:
         message_header = client_socket.recv(HEADER_LENGTH)
@@ -41,8 +45,23 @@ def receive_message(client_socket):
         return {"header": message_header, "data": client_socket.recv(message_length)}
 
     except:
-        return False
-    
+        return False 
+
+def command_listener():
+    while True:
+        cmd = input()
+        if cmd.strip() == "showPublic":
+            print("Clientes conectados (IP pública):")
+            for sock, addr in client_addresses.items():
+                user = clients.get(sock)
+                username = user['data'].decode('utf-8') if user else "Desconocido"
+                print(f"{username}: {addr[0]}:{addr[1]}")
+        else:
+            print("Comando no reconocido.")
+
+# Iniciar el hilo para escuchar comandos
+threading.Thread(target=command_listener, daemon=True).start()
+
 while True:
     read_sockets, _, exception_sockets = select.select(sockets_list, [], sockets_list)
 
@@ -55,8 +74,8 @@ while True:
                 continue
 
             sockets_list.append(client_socket)
-
             clients[client_socket] = user
+            client_addresses[client_socket] = client_address  # Guardar dirección
 
             print(f"Accepted connection from {client_address[0]}:{client_address[1]} username:{user['data'].decode('utf-8')}")
 
@@ -67,6 +86,7 @@ while True:
                 print(f"Closed connection from {clients[notified_socket]['data'].decode('utf-8')}")
                 sockets_list.remove(notified_socket)
                 del clients[notified_socket]
+                del client_addresses[notified_socket]  # Eliminar dirección
                 continue
 
             user = clients[notified_socket]
@@ -79,3 +99,4 @@ while True:
     for notified_socket in exception_sockets:
         sockets_list.remove(notified_socket)
         del clients[notified_socket]
+        del client_addresses[notified_socket]
