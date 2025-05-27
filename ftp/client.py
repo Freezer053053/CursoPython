@@ -1,4 +1,5 @@
 import socket
+import pickle
 
 HEADERSIZE = 10
 
@@ -7,7 +8,7 @@ s.connect((socket.gethostname(), 1234))
 
 while True:
 
-    full_msg = ''
+    full_msg = b''
     new_msg = True
     while True:
         # El valor dentro de recv es el tamaño del buffer de datos
@@ -17,12 +18,16 @@ while True:
             msglen = int(msg[:HEADERSIZE])
             new_msg = False
 
-        full_msg += msg.decode("utf-8")
+        full_msg += msg
 
         if len(full_msg)-HEADERSIZE == msglen:
             print("full msg recvd")
             print(full_msg[HEADERSIZE:])
+
+            d = pickle.loads(full_msg[HEADERSIZE:])
+            print(d)
+
             new_msg = True
-            full_msg = ''     
+            full_msg = b''     
 
     print(full_msg)
